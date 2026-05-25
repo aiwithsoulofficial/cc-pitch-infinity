@@ -203,6 +203,9 @@ p { font-size:0.9rem; color:var(--text-mid); font-weight:300; line-height:1.8; }
 </style>
 </head>
 <body>
+<div id="inapp-banner" style="display:none; position:fixed; top:0; left:0; right:0; z-index:9999; background:var(--teal-bright); color:var(--dark); padding:10px 16px; text-align:center; font-family:'Montserrat',sans-serif; font-size:0.7rem; font-weight:700;">
+  For the best experience, <a href="" id="inapp-link" style="color:var(--dark); text-decoration:underline;">open in Safari</a> or Chrome
+</div>
 <div class="deck" id="deck">
 
 <!-- ========== SLIDE: COVER (Canva static) ========== -->
@@ -577,6 +580,15 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+// Detect in-app browsers (Messenger, Instagram, Facebook)
+var ua = navigator.userAgent || '';
+if (/FBAN|FBAV|Instagram|Line|Messenger/i.test(ua)) {
+  var banner = document.getElementById('inapp-banner');
+  var link = document.getElementById('inapp-link');
+  if (banner) { banner.style.display = 'block'; }
+  if (link) { link.href = window.location.href; }
+}
+
 // Signature pad
 const canvas = document.getElementById('sig-canvas');
 const ctx = canvas ? canvas.getContext('2d') : null;
@@ -637,6 +649,12 @@ function acceptProposal() {
 
   document.getElementById('accept-btn').style.display = 'none';
   document.getElementById('accept-confirm').style.display = 'block';
+
+  // Redirect to payment after 3 seconds
+  var stripeLink = 'https://buy.stripe.com/6oUeVd7qD9He65N8og9oc14';
+  if (stripeLink && !stripeLink.includes('{{')) {
+    setTimeout(function() { window.open(stripeLink, '_blank'); }, 3000);
+  }
 }
 </script>
 </body>
